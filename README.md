@@ -72,8 +72,15 @@ LRParser 로 만든 한글 계산기 (feat. lex, yacc)
 
 # 빌드
 
+## 맥
+
 ```sh
 make
 ```
 
-macOS, ubuntu에서 빌드, 동작 확인함.
+## ubuntu
+
+```sh
+sudo apt install bison flex
+make
+```
