@@ -5,8 +5,8 @@
 
 extern int yylex();
 extern void yyerror(char *s);
+extern FILE *yyin, *yyout;
 
-char var_name;
 %}
 /* %token NAME NUMBER */
 
@@ -19,6 +19,8 @@ char var_name;
 %token PLUS MINUS MUL DIV
 %token AT OBJ_JOSA
 %token VERB_ASSIGN
+%token VERB_PRINT
+%token NAME_WITH_OBJ_JOSA
 
 %left MINUS PLUS
 %left MUL DIV
@@ -31,7 +33,8 @@ statement_list: statement '\n'
           ;
 statement:        NAME AT expression OBJ_JOSA VERB_ASSIGN { hash_add(var_new($1, $3)); }
           |   expression OBJ_JOSA NAME AT VERB_ASSIGN { hash_add(var_new($3, $1)); }
-          |   expression               { printf("     는 %g\n", $1); }
+          |   expression OBJ_JOSA VERB_PRINT { printf(">> %g\n", $1); }
+          |   expression
           ;
 expression: expression PLUS expression  { $$ = $1 + $3;  }
           | expression MINUS expression  { $$ = $1 - $3;  }
@@ -49,6 +52,12 @@ expression: expression PLUS expression  { $$ = $1 + $3;  }
            ;
 %%
 
-int main() {
+int main(int argc, char *argv[]) {
+    ++argv, --argc;  /* skip over program name */
+    if (argc > 0)
+        yyin = fopen( argv[0], "r" );
+    else
+        yyin = stdin;
+    
     yyparse();
 }
