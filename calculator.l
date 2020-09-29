@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern double vbltable[333];
 %}
 
 %%
@@ -18,7 +17,7 @@ extern double vbltable[333];
 (에) { return AT; }
 (을|를) { return OBJ_JOSA; }
 (대입한다|넣는다) { return VERB_ASSIGN; }
-[a-z]    {      yylval.vblno = yytext[0] - 'a'; return NAME; }
+(가|나|다|라|마|바|사|아)    {  strcpy(yylval.name, yytext); return NAME; }
 "$"      { return 0; }
 \n |
 . return  yytext[0];

@@ -1,19 +1,20 @@
 %{
 #include <stdio.h>
 #include "y.tab.h"
+#include "variable.h"
 
 extern int yylex();
 extern void yyerror(char *s);
-double vbltable[333];
+
 char var_name;
 %}
 /* %token NAME NUMBER */
 
 %union  {
     double dval;
-    int vblno;
+    char name[64];
 }
-%token    <vblno> NAME
+%token    <name> NAME
 %token    <dval> NUMBER
 %token PLUS MINUS MUL DIV
 %token AT OBJ_JOSA
@@ -28,8 +29,8 @@ char var_name;
 statement_list: statement '\n'
           |         statement_list statement '\n'
           ;
-statement:        NAME AT expression OBJ_JOSA VERB_ASSIGN { vbltable[$1] = $3; }
-          |   expression OBJ_JOSA NAME AT VERB_ASSIGN { vbltable[$3] = $1; }
+statement:        NAME AT expression OBJ_JOSA VERB_ASSIGN { hash_add(var_new($1, $3)); }
+          |   expression OBJ_JOSA NAME AT VERB_ASSIGN { hash_add(var_new($3, $1)); }
           |   expression               { printf("     는 %g\n", $1); }
           ;
 expression: expression PLUS expression  { $$ = $1 + $3;  }
@@ -43,7 +44,8 @@ expression: expression PLUS expression  { $$ = $1 + $3;  }
            |  '-' expression  %prec UMINUS   { $$ = -$2; } /* The keyword %prec changes the precedence level associated with a particular grammar rule */
            |  '(' expression ')'     { $$ = $2; }
            |       NUMBER     { $$ = $1; }
-           |       NAME       { var_name = $1 + 'a'; $$ = vbltable[$1]; }
+           |       NAME       { var_t *search = hash_find($1); 
+                                if (search == NULL) $$ = 0; else $$ = search->val;  }
            ;
 %%
 
