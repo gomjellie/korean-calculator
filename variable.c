@@ -31,6 +31,8 @@ var_t *hash_find(char *key) {
 
 void hash_delete(char *key) {
     var_t *search = hash_find(key);
+    if (search == NULL) return;
+    
     HASH_DEL(hash_head, search);
     var_del(search);
 }
