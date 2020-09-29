@@ -76,4 +76,4 @@ LRParser 로 만든 한글 계산기 (feat. lex, yacc)
 make
 ```
 
-macOS에서만 작동 확인함.
+macOS, ubuntu에서 빌드, 동작 확인함.
