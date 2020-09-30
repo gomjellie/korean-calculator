@@ -59,5 +59,7 @@ int main(int argc, char *argv[]) {
     else
         yyin = stdin;
     
+    printf("hangul size: %lu\n", strlen("한"));
+    
     yyparse();
 }
